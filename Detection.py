@@ -1,3 +1,4 @@
+import queue
 import cv2
 import numpy as np
 import torchvision
@@ -11,6 +12,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import threading
 
 vgg16 = models.vgg16_bn(pretrained=True)
 num_features = vgg16.classifier[6].in_features
@@ -44,33 +46,87 @@ def pre_image(image_path,model):
       class_name = classes[index]
       return class_name
 
+def pre_image_cam(img,model):
+   mean = [0.485, 0.456, 0.406] 
+   std = [0.229, 0.224, 0.225]
+   transform_norm = transforms.Compose([transforms.ToTensor(), 
+   transforms.Resize((224,224)),transforms.Normalize(mean, std)])
+   # get normalized image
+   img_normalized = transform_norm(img).float()
+   img_normalized = img_normalized.unsqueeze_(0)
+   # input = Variable(image_tensor)
+   img_normalized = img_normalized.to(device)
+   # print(img_normalized.shape)
+   with torch.no_grad():
+      model.eval()  
+      output =model(img_normalized)
+     # print(output)
+      index = output.data.cpu().numpy().argmax()
+      classes = ["Crack", "No Crack"]
+      class_name = classes[index]
+      return class_name
+
+def taskPredict(tempImgArray):
+    countCrack = 0
+    countNoCrack = 0
+    for x in tempImgArray:
+        if pre_image_cam(x, vgg16) == "Crack":
+            countCrack =+ 1
+        else:
+            countNoCrack =+ 1
+    if countCrack > countNoCrack:
+        print("Crack")
+    else:
+        print("No Crack")
+
+
 #predict_class = pre_image("/home/user/Building-Inspection/Photos_NYP/Retaining-Wall-Crack.jpg",vgg16)
 #print(predict_class)
 
 countCW = 0
 countUW=0
 
-directory="/home/user/Building-Inspection/DATA_Maguire_20180517_ALL/W/TEST/UW"
-for filename in os.listdir(directory):
-    f = os.path.join(directory, filename)
-    # checking if it is a file
-    if os.path.isfile(f):
-        if pre_image(f, vgg16) == "Crack":
-            countCW += 1
-        else:
-            countUW += 1
 
-print("Crack = " + str(countCW))
-print("\nNo Crack = " + str(countUW))
+def testPrediction():
+    directory="/home/user/Building-Inspection/DATA_Maguire_20180517_ALL/W/TEST/UW"
+    for filename in os.listdir(directory):
+        f = os.path.join(directory, filename)
+        # checking if it is a file
+        if os.path.isfile(f):
+            if pre_image(f, vgg16) == "Crack":
+                countCW += 1
+            else:
+                countUW += 1
 
+    print("Crack = " + str(countCW))
+    print("\nNo Crack = " + str(countUW))
 
-# cam = cv2.VideoCapture(0)
-# while True:
-#     # Read and resize image
-#     success, image = cam.read()
-#     image = cv2.resize(image, (640, 480))
-#     cv2.imshow("Image with mask", image_final)
-#     if cv2.waitKey(1) & 0xFF == ord('q'): 
-#         cam.release()
-#         cv2.destroyAllWindows()
-#         break
+def testTask():
+    print("Test")
+
+tempImgArray = []
+
+cam = cv2.VideoCapture(0)
+
+while True:
+    countCrack = 0
+    countNoCrack = 0
+    output = None
+
+    # Read and resize image
+    ret, frame = cam.read()
+    tempImgArray.append(frame)
+    t1 = threading.Thread(target=taskPredict, args=(tempImgArray,), name="t1")
+    if (len(tempImgArray) == 30):
+        t1.start()
+        tempImgArray.clear()
+    cv2.putText(frame, '%s' %(output),(950,250), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,255,255), 3)
+    cv2.imshow("Crack Detection", frame)
+    t1.join
+    # image = cv2.resize(image, (640, 480))
+    # cv2.imshow("Image with mask", image_final)
+    if cv2.waitKey(1) & 0xFF == ord('q'): 
+        cam.release()
+        cv2.destroyAllWindows()
+        break
+#print(tempImgArray)
