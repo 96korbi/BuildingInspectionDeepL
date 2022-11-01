@@ -104,10 +104,11 @@ tempImgArray = []
 cam = cv2.VideoCapture(0)
 q= queue.Queue(maxsize=0)
 
-for i in range(20):
-    worker = threading.Thread(target=taskPredict, args=(q,), daemon=True)
-    worker.start()
+
 while True:
+    for i in range(20):
+        worker = threading.Thread(target=taskPredict, args=(q,), daemon=True)
+        worker.start()
     countCrack = 0
     countNoCrack = 0
     output = None
@@ -126,5 +127,5 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'): 
         cam.release()
         cv2.destroyAllWindows()
-        break
+        exit()
 #print(tempImgArray)
