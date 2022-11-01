@@ -1,0 +1,9 @@
+# Image Database download it from digitalcommons.usu.edu/all-datasets/48/
+/DATA_Maguire_20180517_ALL
+
+# Old trained models to big to upload
+/Old trained models
+
+vgg16-397923af.pth
+
+VGG16_v2-OCT_Building_half_dataset.pt
