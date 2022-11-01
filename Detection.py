@@ -1,3 +1,5 @@
+import asyncio
+import multiprocessing
 import queue
 import cv2
 import numpy as np
@@ -66,18 +68,10 @@ def pre_image_cam(img,model):
       class_name = classes[index]
       return class_name
 
-def taskPredict(tempImgArray):
-    countCrack = 0
-    countNoCrack = 0
-    for x in tempImgArray:
-        if pre_image_cam(x, vgg16) == "Crack":
-            countCrack =+ 1
-        else:
-            countNoCrack =+ 1
-    if countCrack > countNoCrack:
-        print("Crack")
-    else:
-        print("No Crack")
+def taskPredict(q):
+    task = q.get()
+    print(pre_image_cam(task, vgg16))
+    q.task_done()
 
 
 #predict_class = pre_image("/home/user/Building-Inspection/Photos_NYP/Retaining-Wall-Crack.jpg",vgg16)
@@ -104,10 +98,15 @@ def testPrediction():
 def testTask():
     print("Test")
 
+
 tempImgArray = []
 
 cam = cv2.VideoCapture(0)
+q= queue.Queue(maxsize=0)
 
+for i in range(20):
+    worker = threading.Thread(target=taskPredict, args=(q,), daemon=True)
+    worker.start()
 while True:
     countCrack = 0
     countNoCrack = 0
@@ -116,13 +115,12 @@ while True:
     # Read and resize image
     ret, frame = cam.read()
     tempImgArray.append(frame)
-    t1 = threading.Thread(target=taskPredict, args=(tempImgArray,), name="t1")
-    if (len(tempImgArray) == 30):
-        t1.start()
+    if (len(tempImgArray) == 10):
+        q.put(frame)
         tempImgArray.clear()
     cv2.putText(frame, '%s' %(output),(950,250), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,255,255), 3)
     cv2.imshow("Crack Detection", frame)
-    t1.join
+    
     # image = cv2.resize(image, (640, 480))
     # cv2.imshow("Image with mask", image_final)
     if cv2.waitKey(1) & 0xFF == ord('q'): 
