@@ -16,7 +16,7 @@ out = "Computing"
 vgg16 = models.vgg16_bn(pretrained=True)
 num_features = vgg16.classifier[6].in_features
 features = list(vgg16.classifier.children())[:-1] # Remove last layer
-features.extend([nn.Linear(num_features, 2)]) # Add our layer with 4 outputs
+features.extend([nn.Linear(num_features, 2)]) # Add our layer with 2 outputs
 vgg16.classifier = nn.Sequential(*features) # Replace the vgg16 classifier
 vgg16.load_state_dict(torch.load("../Model/VGG16_v2-OCT_Building_half_dataset.pt"))
 
