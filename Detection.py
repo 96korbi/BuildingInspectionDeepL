@@ -99,7 +99,7 @@ def testTask():
     print("Test")
 
 
-tempImgArray = []
+frameCount = 0
 
 cam = cv2.VideoCapture(0)
 q= queue.Queue(maxsize=0)
@@ -115,17 +115,14 @@ while True:
 
     # Read and resize image
     ret, frame = cam.read()
-    tempImgArray.append(frame)
-    if (len(tempImgArray) == 10):
+    frameCount += 1
+    if (frameCount == 10):
         q.put(frame)
-        tempImgArray.clear()
+        frameCount = 0
     cv2.putText(frame, '%s' %(output),(950,250), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,255,255), 3)
     cv2.imshow("Crack Detection", frame)
     
-    # image = cv2.resize(image, (640, 480))
-    # cv2.imshow("Image with mask", image_final)
     if cv2.waitKey(1) & 0xFF == ord('q'): 
         cam.release()
         cv2.destroyAllWindows()
         exit()
-#print(tempImgArray)
