@@ -1,4 +1,9 @@
 # Detect Cracks in a Wall for Building Inspections
+[![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./LICENSE.md)&nbsp;
+[![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://www.python.org/)&nbsp;
+[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)&nbsp;
+[![Matplotlib](https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black)](https://matplotlib.org/)&nbsp;
+[![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)&nbsp;
 
 ## Overview
 
@@ -10,8 +15,12 @@ For performance enhancment only every 10th frame is used in the evaluation.
 
 ## Requirements
 
+* Ubuntu => 22.10
 * Python => 3.10
 * Python Libraries: `tkinter` `numpy` `matplotlib` `opencv-python` `torch` `torchvision`
+
+To clone the pretrained Model, not necessary if you want to train it yourself
+* Git LFS => 3.2.*
 
 ### Database for model training
 
@@ -21,11 +30,11 @@ https://digitalcommons.usu.edu/all_datasets/48/
 ## Clone this repository
 
 ```
-git clone
+git clone https://github.com/96korbi/BuildingInspectionDeepL
 ```
 
 ```
-pip -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ```
