@@ -65,7 +65,7 @@ def pre_image_cam(img,model):
       class_name = classes[index]
       return class_name
 
-def taskPredict(q):
+def taskPredict(q):  #Evaluate the image as a task to enable multithreading
     global out
     task = q.get()
     out = (pre_image_cam(task, vgg16))
@@ -101,23 +101,26 @@ q= queue.Queue(maxsize=0)
 
 
 while True:
+    
+    # Create multiple threads which will pick the images from the queue
+    # This is neccessary so the video doesn't lag while validating the frame
     for i in range(20):
         worker = threading.Thread(target=taskPredict, args=(q,), daemon=True)
         worker.start()
-    countCrack = 0
-    countNoCrack = 0
-    output = None
 
     # Read and resize image
     ret, image = cam.read()
     frameCount += 1
+
+    # Every 10th frame is put in queue which is evaluted in taskPredict
     if (frameCount == 10):
         q.put(image)
         frameCount = 0
     
-    if out == "Crack":
+    # Mask overlay to mark the crack
+    if out == "Crack":  
         image = cv2.resize(image, (640, 480))
-        # Applaying Gaussian Blur on input image
+        # Applying Gaussian Blur on input image
         image_blurred = cv2.GaussianBlur(image, (25, 25),0)
         image_sobel = mask.sobel(image_blurred)
         # Change image from BGR to Gray + BGR to Gray
@@ -142,14 +145,17 @@ while True:
         # Draw mask on image
         image_cont_approx_mask = cv2.drawContours(image.copy(), new_cont ,-1, (0,0,255), -1)
         image_final = cv2.addWeighted(image_cont_approx_mask, 0.5, image, 1 - 0.5, 0, image)
+    
+    # No overlay if theres no crack
     else:
         image_final = image
 
-
+    # Show the video stream and write the output of the validation in the image
     cv2.putText(image_final, '%s' %(out),(10,40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
     cv2.imshow("Crack Detection", image_final)
     
+    # Ending the program
     if cv2.waitKey(1) & 0xFF == ord('q'): 
         cam.release()
         cv2.destroyAllWindows()
-        exit()
+        exit() # Exit kills every thread running

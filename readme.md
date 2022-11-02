@@ -13,6 +13,11 @@ For performance enhancment only every 10th frame is used in the evaluation.
 * Python => 3.10
 * Python Libraries: `tkinter` `numpy` `matplotlib` `opencv-python` `torch` `torchvision`
 
+### Database for model training
+
+SDNET2018: A concrete crack image dataset for machine learning applications
+https://digitalcommons.usu.edu/all_datasets/48/
+
 ## Run Detection
 
 Run in directory (src\Detection)
@@ -20,3 +25,7 @@ Run in directory (src\Detection)
 ```
 python3 detection.py
 ```
+
+## Sources
+
+* Maguire, M., Dorafshan, S., & Thomas, R. J. (2018). SDNET2018: A concrete crack image dataset for machine learning applications. Utah State University. https://doi.org/10.15142/T3TD19
