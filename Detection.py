@@ -16,6 +16,8 @@ import numpy as np
 import os
 import threading
 
+out = "Computing"
+
 vgg16 = models.vgg16_bn(pretrained=True)
 num_features = vgg16.classifier[6].in_features
 features = list(vgg16.classifier.children())[:-1] # Remove last layer
@@ -69,8 +71,9 @@ def pre_image_cam(img,model):
       return class_name
 
 def taskPredict(q):
+    global out
     task = q.get()
-    print(pre_image_cam(task, vgg16))
+    out = (pre_image_cam(task, vgg16))
     q.task_done()
 
 
@@ -119,7 +122,7 @@ while True:
     if (frameCount == 10):
         q.put(frame)
         frameCount = 0
-    cv2.putText(frame, '%s' %(output),(950,250), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,255,255), 3)
+    cv2.putText(frame, '%s' %(out),(10,40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
     cv2.imshow("Crack Detection", frame)
     
     if cv2.waitKey(1) & 0xFF == ord('q'): 
