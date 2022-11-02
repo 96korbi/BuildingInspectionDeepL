@@ -1,20 +1,15 @@
-import asyncio
-import multiprocessing
 import queue
 import cv2
 import numpy as np
-import torchvision
 import torch
 import torch.nn as nn
 from torchvision import models
 import torchvision.transforms as transforms
-import torchvision.datasets as datasets
-from torch.utils.data import DataLoader,Dataset
 from PIL import Image
-import matplotlib.pyplot as plt
 import numpy as np
 import os
 import threading
+import mask
 
 out = "Computing"
 
@@ -23,7 +18,7 @@ num_features = vgg16.classifier[6].in_features
 features = list(vgg16.classifier.children())[:-1] # Remove last layer
 features.extend([nn.Linear(num_features, 2)]) # Add our layer with 4 outputs
 vgg16.classifier = nn.Sequential(*features) # Replace the vgg16 classifier
-vgg16.load_state_dict(torch.load("/home/user/Building-Inspection/VGG16_v2-OCT_Building_half_dataset.pt"))
+vgg16.load_state_dict(torch.load("../Model/VGG16_v2-OCT_Building_half_dataset.pt"))
 
 vgg16.eval()
 
@@ -77,15 +72,12 @@ def taskPredict(q):
     q.task_done()
 
 
-#predict_class = pre_image("/home/user/Building-Inspection/Photos_NYP/Retaining-Wall-Crack.jpg",vgg16)
-#print(predict_class)
-
 countCW = 0
 countUW=0
 
 
 def testPrediction():
-    directory="/home/user/Building-Inspection/DATA_Maguire_20180517_ALL/W/TEST/UW"
+    directory="../../DATA_Maguire_20180517_ALL/W/TEST/UW"
     for filename in os.listdir(directory):
         f = os.path.join(directory, filename)
         # checking if it is a file
@@ -117,13 +109,45 @@ while True:
     output = None
 
     # Read and resize image
-    ret, frame = cam.read()
+    ret, image = cam.read()
     frameCount += 1
     if (frameCount == 10):
-        q.put(frame)
+        q.put(image)
         frameCount = 0
-    cv2.putText(frame, '%s' %(out),(10,40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
-    cv2.imshow("Crack Detection", frame)
+    
+    if out == "Crack":
+        image = cv2.resize(image, (640, 480))
+        # Applaying Gaussian Blur on input image
+        image_blurred = cv2.GaussianBlur(image, (25, 25),0)
+        image_sobel = mask.sobel(image_blurred)
+        # Change image from BGR to Gray + BGR to Gray
+        imageGRAY = cv2.cvtColor(image_sobel, cv2.COLOR_BGR2GRAY)
+        imageGRAY = cv2.GaussianBlur(imageGRAY, (7,7),0)
+        # Change pixels greater than 0,3*max image pixel to 255
+        imageGRAY[imageGRAY > 0.3*np.max(imageGRAY)] = 255
+        # Change pixels values to 0 if is < 126 otherwise to 255
+        _, imageGRAY = cv2.threshold(imageGRAY, 126, 255, cv2.THRESH_BINARY)
+        # Merge pixels using opencv closing morphology functions
+        image_conn = mask.merger(imageGRAY)
+        # Normalize image
+        image_norm = cv2.normalize(image_conn, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8UC1)
+        # Finding contours on binary image
+        cont, hierarchy = cv2.findContours(image_norm.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+        # Approximation contours by mean of 10 points before and 10 points after
+        new_cont = mask.approx_cont(cont, look_back=10)
+        # Draw raw contours on input image
+        image_cont = cv2.drawContours(image.copy(), cont ,-1, (0,0,255), 2)
+        # Draw approximated contours on input image
+        image_cont_approx = cv2.drawContours(image.copy(), new_cont ,-1, (0,0,255), 2)
+        # Draw mask on image
+        image_cont_approx_mask = cv2.drawContours(image.copy(), new_cont ,-1, (0,0,255), -1)
+        image_final = cv2.addWeighted(image_cont_approx_mask, 0.5, image, 1 - 0.5, 0, image)
+    else:
+        image_final = image
+
+
+    cv2.putText(image_final, '%s' %(out),(10,40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
+    cv2.imshow("Crack Detection", image_final)
     
     if cv2.waitKey(1) & 0xFF == ord('q'): 
         cam.release()

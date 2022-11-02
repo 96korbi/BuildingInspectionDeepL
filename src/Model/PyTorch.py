@@ -1,12 +1,10 @@
 from __future__ import print_function, division
 
-import tkinter
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.optim import lr_scheduler
 from torch.autograd import Variable
-import numpy as np
 import torchvision
 from torchvision import datasets, models, transforms
 import matplotlib
@@ -24,7 +22,7 @@ use_gpu = torch.cuda.is_available()
 if use_gpu:
     print("Using CUDA")
 
-data_dir = '/home/user/Building-Inspection/DATA_Maguire_20180517_ALL/W'
+data_dir = '../../Building-Inspection/DATA_Maguire_20180517_ALL/W'
 TRAIN = 'TRAIN'
 VAL = 'VAL'
 TEST = 'TEST'
