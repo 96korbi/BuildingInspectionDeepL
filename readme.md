@@ -18,6 +18,20 @@ For performance enhancment only every 10th frame is used in the evaluation.
 SDNET2018: A concrete crack image dataset for machine learning applications
 https://digitalcommons.usu.edu/all_datasets/48/
 
+## Clone this repository
+
+```
+git clone
+```
+
+```
+pip -r requirements.txt
+```
+
+```
+apt install python3-tk
+```
+
 ## Run Detection
 
 Run in directory (src\Detection)
