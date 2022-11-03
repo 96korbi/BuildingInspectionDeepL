@@ -13,6 +13,12 @@ In this project Pytorch is used to train the VGG16 model with a Wall Crack Datas
 In the next step the model validates if the video input has a wall crack in it or not. If there is a wall crack a mask gets overlayed over the video which marks the crack.
 For performance enhancment only every 10th frame is used in the evaluation.
 
+<div align="center">
+  <img src="./static-files/testvideo.gif" alt="Test video showing different images of walls"></img>
+</div>
+
+
+
 ## Requirements
 
 * Ubuntu => 22.10
