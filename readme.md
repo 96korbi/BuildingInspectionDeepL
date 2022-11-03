@@ -19,13 +19,14 @@ For performance enhancment only every 10th frame is used in the evaluation.
 * Python => 3.10
 * Python Libraries: `tkinter` `numpy` `matplotlib` `opencv-python` `torch` `torchvision`
 
-To clone the pretrained Model, not necessary if you want to train it yourself
-* Git LFS => 3.2.*
+### How to get the pretrained Model, not necessary if you want to train it yourself
+
+It is safed with Git LFS so it won't be the right file when you run git clone
+* Download it via Github => [Model](./src/Model/VGG16_v2-OCT_Building_half_dataset.pt)
 
 ### Database for model training
 
-SDNET2018: A concrete crack image dataset for machine learning applications
-https://digitalcommons.usu.edu/all_datasets/48/
+[SDNET2018: A concrete crack image dataset for machine learning applications](https://digitalcommons.usu.edu/all_datasets/48/)
 
 ## Clone this repository
 
@@ -37,16 +38,25 @@ git clone https://github.com/96korbi/BuildingInspectionDeepL
 pip install -r requirements.txt
 ```
 
+Only neccessary for model training to visualize the images
 ```
 apt install python3-tk
 ```
 
-## Run Detection
+## Run detection
 
 Run in directory (src\Detection)
 
 ```
 python3 detection.py
+```
+
+## Run model training
+
+Run in directory (src\Model)
+
+```
+python3 Pytorch.py
 ```
 
 ## Sources
