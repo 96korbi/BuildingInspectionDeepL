@@ -11,18 +11,21 @@ import matplotlib
 import matplotlib.pyplot as plt
 import time
 import os
+from inspect import currentframe, getframeinfo
+from pathlib import Path
 import copy
 
+filename = getframeinfo(currentframe()).filename
+parent = Path(filename).resolve().parent.parent.parent # Working Dir
+
 matplotlib.use('TkAgg')
-
-
 plt.ion()  
 
 use_gpu = torch.cuda.is_available()
 if use_gpu:
     print("Using CUDA")
 
-data_dir = '../../Building-Inspection/DATA_Maguire_20180517_ALL/W'
+data_dir = parent / "DATA_Maguire_20180517_ALL" / "W"
 TRAIN = 'TRAIN'
 VAL = 'VAL'
 TEST = 'TEST'

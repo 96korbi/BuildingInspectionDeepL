@@ -8,8 +8,13 @@ import torchvision.transforms as transforms
 from PIL import Image
 import numpy as np
 import os
+from inspect import currentframe, getframeinfo
+from pathlib import Path
 import threading
 import mask
+
+filename = getframeinfo(currentframe()).filename
+parent_src= Path(filename).resolve().parent.parent
 
 out = "Computing"
 
@@ -18,7 +23,8 @@ num_features = vgg16.classifier[6].in_features
 features = list(vgg16.classifier.children())[:-1] # Remove last layer
 features.extend([nn.Linear(num_features, 2)]) # Add our layer with 2 outputs
 vgg16.classifier = nn.Sequential(*features) # Replace the vgg16 classifier
-vgg16.load_state_dict(torch.load("../Model/VGG16_v2-OCT_Building_half_dataset.pt"))
+pretrained_model_path = parent_src / "Model" / "VGG16_v2-OCT_Building_half_dataset.pt"
+vgg16.load_state_dict(torch.load(pretrained_model_path))
 
 vgg16.eval()
 
@@ -77,7 +83,8 @@ countUW=0
 
 
 def testPrediction():
-    directory="../../DATA_Maguire_20180517_ALL/W/TEST/UW"
+    parent = parent_src.parent
+    directory = parent / "DATA_Maguire_20180517_ALL" / "W" / "TEST" / "UW"
     for filename in os.listdir(directory):
         f = os.path.join(directory, filename)
         # checking if it is a file
