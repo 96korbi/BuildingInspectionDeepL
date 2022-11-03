@@ -21,7 +21,6 @@ For performance enhancment only every 10th frame is used in the evaluation.
 
 ## Requirements
 
-* Ubuntu => 22.10
 * Python => 3.10
 * Python Libraries: `tkinter` `numpy` `matplotlib` `opencv-python` `torch` `torchvision`
 
@@ -40,6 +39,7 @@ It is safed with Git LFS so it won't be the right file when you run git clone
 git clone https://github.com/96korbi/BuildingInspectionDeepL
 ```
 
+On windows it could be neccessary to run this command as administrator to install PyTorch
 ```
 pip install -r requirements.txt
 ```
@@ -54,7 +54,7 @@ apt install python3-tk
 Run in directory (src\Detection)
 
 ```
-python3 detection.py
+python detection.py
 ```
 
 ## Run model training
@@ -62,7 +62,7 @@ python3 detection.py
 Run in directory (src\Model)
 
 ```
-python3 Pytorch.py
+python Pytorch.py
 ```
 
 ## Sources
