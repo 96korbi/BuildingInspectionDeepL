@@ -111,10 +111,11 @@ while True:
     
     # Create multiple threads which will pick the images from the queue
     # This is neccessary so the video doesn't lag while validating the frame
-    for i in range(20):
-        worker = threading.Thread(target=taskPredict, args=(q,), daemon=True)
-        worker.start()
-
+    # Threads should be under 1000 aktive instances. This should be refactored.
+    if(threading.active_count() <= 1000):
+        for i in range(20):
+            worker = threading.Thread(target=taskPredict, args=(q,), daemon=True)
+            worker.start()
     # Read and resize image
     ret, image = cam.read()
     frameCount += 1
