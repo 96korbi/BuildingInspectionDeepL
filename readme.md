@@ -28,6 +28,7 @@ For performance enhancment only every 10th frame is used in the evaluation.
 
 It is safed with Git LFS so it won't be the right file when you run git clone
 * Download it via Github => [Model](./src/Model/VGG16_v2-OCT_Building_half_dataset.pt)
+* Get it via [Nextcloud](https://nextcloud.th-deg.de/s/RAZ4D4aNRns3Axo)
 
 ### Database for model training
 
