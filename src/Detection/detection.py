@@ -1,6 +1,5 @@
 import queue
 import cv2
-import numpy as np
 import torch
 import torch.nn as nn
 from torchvision import models
@@ -104,7 +103,7 @@ def testTask():
 frameCount = 0
 
 cam = cv2.VideoCapture(0)
-q= queue.Queue(maxsize=0)
+q = queue.Queue(maxsize=0)
 
 
 while True:
@@ -112,7 +111,7 @@ while True:
     # Create multiple threads which will pick the images from the queue
     # This is neccessary so the video doesn't lag while validating the frame
     # Threads should be under 1000 aktive instances. This should be refactored.
-    if(threading.active_count() <= 1000):
+    if (threading.active_count() <= 1000):
         for i in range(20):
             worker = threading.Thread(target=taskPredict, args=(q,), daemon=True)
             worker.start()
@@ -154,7 +153,7 @@ while True:
         image_cont_approx_mask = cv2.drawContours(image.copy(), new_cont ,-1, (0,0,255), -1)
         image_final = cv2.addWeighted(image_cont_approx_mask, 0.5, image, 1 - 0.5, 0, image)
     
-    # No overlay if theres no crack
+    # No overlay if there's no crack
     else:
         image_final = image
 
