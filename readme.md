@@ -22,7 +22,7 @@ For performance enhancment only every 10th frame is used in the evaluation.
 ## Requirements
 
 * Python => 3.10
-* Python Libraries: `tkinter` `numpy` `matplotlib` `opencv-python` `torch` `torchvision`
+* Python Libraries: `tkinter` `numpy` `matplotlib` `opencv-python` `torch` `torchvision` `alive-progress`
 
 ### How to get the pretrained Model, not necessary if you want to train it yourself
 
