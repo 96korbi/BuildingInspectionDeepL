@@ -4,7 +4,7 @@ import queue
 import cv2
 import torch
 import torch.nn as nn
-from torchvision import models
+from torchvision.models import vgg16_bn, VGG16_BN_Weights
 import torchvision.transforms as transforms
 import PIL.Image
 import numpy as np
@@ -14,6 +14,7 @@ from pathlib import Path
 import threading
 import mask
 from tkinter import *
+from tkinter import ttk
 from tkinter.filedialog import askdirectory
 
 filename = getframeinfo(currentframe()).filename
@@ -21,7 +22,7 @@ parent_src = Path(filename).resolve().parent.parent
 
 out = "Computing"
 
-vgg16 = models.vgg16_bn(pretrained=True)
+vgg16 = vgg16_bn(weights=VGG16_BN_Weights.DEFAULT)
 num_features = vgg16.classifier[6].in_features
 features = list(vgg16.classifier.children())[:-1]  # Remove last layer
 features.extend([nn.Linear(num_features, 2)])  # Add our layer with 2 outputs
@@ -182,11 +183,11 @@ def predictWebcam():
             exit()  # Exit kills every thread running
 
 def mainDialog():
-    win.title('question')
+    win.title('BuildingInspectionDeepL')
     message = "What do you want to do?"
-    Label(win, text=message).pack()
-    Button(win, text='Webcam', command=predictWebcam).pack()
-    Button(win, text='Directory', command=predictDirectory).pack()
+    ttk.Label(win, text=message).pack()
+    ttk.Button(win, text='Webcam', command=predictWebcam).pack()
+    ttk.Button(win, text='Directory', command=predictDirectory).pack()
     win.mainloop()
 
 win = Tk()
