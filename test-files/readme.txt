@@ -1,1 +1,1 @@
-In the Folder TestImages are 25 Pictures with Cracks and 50 Pictures without a Crack
+In the Folder TestImages are 45 Pictures with Cracks and 80 Pictures without a Crack
