@@ -71,7 +71,7 @@ More details in the WikiPage [How-to: Add more classes to the model](https://git
 
 * Maguire, M., Dorafshan, S., & Thomas, R. J. (2018). SDNET2018: A concrete crack image dataset for machine learning applications. Utah State University. https://doi.org/10.15142/T3TD19
 
-## Usefule Links
+## Useful Links
 * [Crash Course Deep Learning](https://towardsdatascience.com/a-beginners-guide-to-deep-learning-ed41ac75c4e5)
 * [VGG16 transfer learning pytorch](https://www.kaggle.com/code/carloalbertobarbano/vgg16-transfer-learning-pytorch)
 * [VGG16 transfer learning keras](https://towardsdatascience.com/transfer-learning-with-vgg16-and-keras-50ea161580b4)
